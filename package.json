@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "name": "data",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "imruxin",
+  "license": "ISC",
+  "description": "以JSON形式返回指定文件夹内的内容"
+}
