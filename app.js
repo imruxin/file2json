@@ -11,16 +11,34 @@ const commonFn = (req, res, dir = "data") => {
   const baseDirectoryPath = path.join(__dirname, dir);
   // 获取请求路径的相对部分
   let relativePath = req.params[0]; // 这将获取到/api/后面的所有内容
-  const jsFilePath = path.join(baseDirectoryPath, `${relativePath}.js`);
-  const jsonFilePath = path.join(baseDirectoryPath, `${relativePath}.json`);
+  // 清理和验证路径
+  const normalizedPath = path.normalize(relativePath).replace(/^(\.\.(\/|\\|$))+/, '');
+  const fullPath = path.join(baseDirectoryPath, normalizedPath);
+  // 验证路径是否在允许的目录内
+  if (!fullPath.startsWith(baseDirectoryPath)) {
+    return res.status(403).send('Access Denied');
+  }
+  
+  // 处理直接的文件请求
+  if (relativePath.endsWith(".json")) {
+    return res.sendFile(fullPath, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        return res.status(err.status || 500).send('Error sending file');
+      }
+    });
+  }
+
+  const jsFilePath = path.join(baseDirectoryPath, `${normalizedPath}.js`);
+  const jsonFilePath = path.join(baseDirectoryPath, `${normalizedPath}.json`);
   const indexJsFilePath = path.join(
     baseDirectoryPath,
-    relativePath,
+    normalizedPath,
     "index.js"
   );
   const indexJsonFilePath = path.join(
     baseDirectoryPath,
-    relativePath,
+    normalizedPath,
     "index.json"
   );
 
